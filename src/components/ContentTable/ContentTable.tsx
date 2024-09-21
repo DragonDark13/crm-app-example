@@ -93,6 +93,8 @@ const ContentTable: React.FC = () => {
         setCustomerData(data);
     };
 
+        console.log(import.meta.env.REACT_APP_ASANA_WORKSPACE) // "123"
+console.log(import.meta.env.REACT_APP_ASANA_KEY) // undefined
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => {
         setPage(newPage);

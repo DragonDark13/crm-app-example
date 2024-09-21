@@ -5,7 +5,8 @@ import {Customer} from "../ContentTable/ContentTable";
 import {useEffect, useState} from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Notes from "../Notes/Notes";
-
+import Deals from "../Deals/Deals";
+import Tickets from "../Tickets/Tickets";
 
 
 const Item = styled(Paper)(({theme}) => ({
@@ -25,10 +26,10 @@ interface IModal {
 function Modals({data, open, setIsOpen}: IModal) {
 
     const [openAdd, setOpenAdd] = useState(false);
-const [displayNotes, setDisplayNotes] = useState();
-useEffect(() => {
-    data && setDisplayNotes(data.notes);
-}, [data]);
+    const [displayNotes, setDisplayNotes] = useState();
+    useEffect(() => {
+        data && setDisplayNotes(data.notes);
+    }, [data]);
 
 
     const handleClose = () => {
@@ -76,52 +77,52 @@ useEffect(() => {
                             item
                             xs={6}
                             sx={{backgroundColor: "lightgray", padding: "5px"}}
-                        > <Item sx={{ backgroundColor: "inherit", marginTop: "2rem" }}>
-                <Typography variant="h6" gutterBottom component="div">
-                  Notes
-                </Typography>
-                {!openAdd && (
-                  <Box sx={{ flexGrow: 1 }}>
-                    <Paper
-                      elevation={1}
-                      sx={{
-                        padding: "2rem",
-                        height: "30rem",
-                        overflow: "auto",
-                      }}
-                    >
-                      {displayNotes?.map((note) => (
-                        <List>
-                          <ListItem sx={{ borderBottom: "1px solid black" }}>
-                            <ListItemText>{note.description}</ListItemText>
-                          </ListItem>
-                        </List>
-                      ))}
-                      {!openAdd && (
-                        <Button
-                          variant="outlined"
-                          startIcon={<AddIcon />}
-                          sx={{ marginTop: "1rem" }}
-                          onClick={() => setOpenAdd(true)}
-                          color="success"
-                        >
-                          Add a note
-                        </Button>
-                      )}
-                    </Paper>
-                  </Box>
-                )}
-                {openAdd && (
-                  <Notes
-                    setOpenAdd={setOpenAdd}
-                    _id={data._id}
-                    noteDescription={data?.notes?.map((item) => ({
-                      description: item.description,
-                    }))}
-                    setDisplayNotes={setDisplayNotes}
-                  />
-                )}
-              </Item>
+                        > <Item sx={{backgroundColor: "inherit", marginTop: "2rem"}}>
+                            <Typography variant="h6" gutterBottom component="div">
+                                Notes
+                            </Typography>
+                            {!openAdd && (
+                                <Box sx={{flexGrow: 1}}>
+                                    <Paper
+                                        elevation={1}
+                                        sx={{
+                                            padding: "2rem",
+                                            height: "30rem",
+                                            overflow: "auto",
+                                        }}
+                                    >
+                                        {displayNotes?.map((note) => (
+                                            <List>
+                                                <ListItem sx={{borderBottom: "1px solid black"}}>
+                                                    <ListItemText>{note.description}</ListItemText>
+                                                </ListItem>
+                                            </List>
+                                        ))}
+                                        {!openAdd && (
+                                            <Button
+                                                variant="outlined"
+                                                startIcon={<AddIcon/>}
+                                                sx={{marginTop: "1rem"}}
+                                                onClick={() => setOpenAdd(true)}
+                                                color="success"
+                                            >
+                                                Add a note
+                                            </Button>
+                                        )}
+                                    </Paper>
+                                </Box>
+                            )}
+                            {openAdd && (
+                                <Notes
+                                    setOpenAdd={setOpenAdd}
+                                    _id={data._id}
+                                    noteDescription={data?.notes?.map((item) => ({
+                                        description: item.description,
+                                    }))}
+                                    setDisplayNotes={setDisplayNotes}
+                                />
+                            )}
+                        </Item>
 
                         </Grid>
                         <Grid item xs={3} sx={{padding: "5px", marginTop: "2rem"}}>
@@ -132,6 +133,7 @@ useEffect(() => {
                                 <Typography variant="p" gutterBottom component="div">
                                     Track the revenue opportunities associated with this record
                                 </Typography>
+                                <Deals userId={data._id}/>
                             </Item>
                             <Item sx={{marginTop: "2rem"}}>
                                 <Typography variant="h6" gutterBottom component="div">
@@ -140,6 +142,7 @@ useEffect(() => {
                                 <Typography variant="p" gutterBottom component="div">
                                     Track the customer requests associated with this record
                                 </Typography>
+                                <Tickets/>
                             </Item>
                         </Grid>
                     </Grid>

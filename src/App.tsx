@@ -5,6 +5,7 @@ import './App.css'
 import ContentTable from "./components/ContentTable/ContentTable.tsx";
 import {ApolloClient, InMemoryCache, ApolloProvider, createHttpLink} from "@apollo/client";
 import {setContext} from "@apollo/client/link/context";
+import Header from "./components/Header/Header";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
     return (
         <>
             <ApolloProvider client={client}>
+                <Header/>
                 <ContentTable/>
             </ApolloProvider>
         </>

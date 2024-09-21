@@ -16,3 +16,20 @@ export const ADD_NOTE = gql`
     }
   }
 `;
+
+export const ADD_DEAL = gql`
+  mutation updateDealsMutation($_id: ID!, $deals: [ID!]!) {
+    updateDeal(_id: $_id, input: { deals: $deals }) {
+      title
+      amount
+      dealOwner
+      deals {
+        _id
+        name
+        company
+        phone
+        email
+      }
+    }
+  }
+`;
