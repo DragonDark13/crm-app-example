@@ -1,9 +1,10 @@
 import { useRef } from "react";
 import { useMutation } from "@apollo/client";
 import { Box, TextField, Grid, Paper, Stack, Button } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
 import SaveIcon from "@mui/icons-material/Save";
 import { ADD_NOTE } from "../../gql/mutation";
+import { LoadingButton } from '@mui/lab';
+
 const Notes = ({ _id, noteDescription, setOpenAdd, setDisplayNotes }) => {
   const descriptionRef = useRef();
   const [addNote] = useMutation(ADD_NOTE);
