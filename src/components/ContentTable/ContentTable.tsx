@@ -13,6 +13,10 @@ import {
 import TablePaginationActions from "../Pagination/index";
 import * as React from "react";
 import Modals from "../Modal/Modal";
+import {useQuery} from "@apollo/client";
+
+import {GET_CUSTOMERS} from "../../gql/query";
+
 
 // Define types for customer data
 export interface Customer {
@@ -70,9 +74,14 @@ const customers: Customer[] = [
 const ContentTable: React.FC = () => {
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - customers.length) : 0;
+
     const [isOpen, setIsOpen] = useState(false);
     const [customerData, setCustomerData] = useState();
+    const {data, loading} = useQuery(GET_CUSTOMERS);
+    const emptyRows =
+        page > 0
+            ? Math.max(0, (1 + page) * rowsPerPage - data.customers.length)
+            : 0;
 
     const handleClick = (data) => {
         setIsOpen(true);
@@ -88,123 +97,133 @@ const ContentTable: React.FC = () => {
         setPage(0);
     };
 
-    return (
-        <React.Fragment><TableContainer component={Paper} sx={{margin: "2rem", width: "95%"}}>
-            <Table sx={{minWidth: 500}} aria-label="custom pagination table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell
-                            align="left"
-                            sx={{
-                                backgroundColor: "black",
-                                color: "white",
-                                borderRight: "1px solid white",
-                            }}
-                        >
-                            Name
-                        </TableCell>
-                        <TableCell
-                            align="left"
-                            sx={{
-                                backgroundColor: "black",
-                                color: "white",
-                                borderRight: "1px solid white",
-                            }}
-                        >
-                            Company
-                        </TableCell>
-                        <TableCell
-                            align="left"
-                            sx={{
-                                backgroundColor: "black",
-                                color: "white",
-                                borderRight: "1px solid white",
-                            }}
-                        >
-                            Email
-                        </TableCell>
-                        <TableCell
-                            align="left"
-                            sx={{
-                                backgroundColor: "black",
-                                color: "white",
-                                borderRight: "1px solid white",
-                            }}
-                        >
-                            Phone
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {customers &&
-                    (rowsPerPage > 0
-                            ? customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : customers
-                    ).map((row, index) => (
-                        <TableRow
-                            key={index}
-                            onClick={() => {
-                                handleClick(row); //We are passing customer's information though this 'row' parameter
-                            }}
-                            sx={{cursor: "pointer"}}
-                        >
-                            <TableCell
-                                component="th"
-                                scope="row"
-                                sx={{width: 160, borderRight: "1px solid black"}}
-                            >
-                                {row.name}
-                            </TableCell>
-                            <TableCell
-                                sx={{width: 160, borderRight: "1px solid black"}}
-                                align="left"
-                            >
-                                {row.company}
-                            </TableCell>
-                            <TableCell
-                                sx={{width: 160, borderRight: "1px solid black"}}
-                                align="left"
-                            >
-                                {row.email}
-                            </TableCell>
-                            <TableCell sx={{width: 160}} align="left">
-                                {row.phone}
-                            </TableCell>
-                        </TableRow>
-                    ))}
+return (
+    <>
+      {loading && (
+        <CircularProgress
+          sx={{ position: "absolute", top: "50%", left: "50%" }}
+        />
+      )}
+      {!loading && (
+        <TableContainer component={Paper} sx={{ margin: "2rem", width: "95%" }}>
+          <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  align="left"
+                  sx={{
+                    backgroundColor: "black",
+                    color: "white",
+                    borderRight: "1px solid white",
+                  }}
+                >
+                  Name
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{
+                    backgroundColor: "black",
+                    color: "white",
+                    borderRight: "1px solid white",
+                  }}
+                >
+                  Company
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{
+                    backgroundColor: "black",
+                    color: "white",
+                    borderRight: "1px solid white",
+                  }}
+                >
+                  Email
+                </TableCell>
+                <TableCell
+                  align="left"
+                  sx={{
+                    backgroundColor: "black",
+                    color: "white",
+                    borderRight: "1px solid white",
+                  }}
+                >
+                  Phone
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data &&
+                (rowsPerPage > 0
+                  ? data?.customers?.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                  : data.customers
+                ).map((row, index) => (
+                  <TableRow
+                    key={index}
+                    onClick={() => {
+                      handleClick(row);
+                    }}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      sx={{ width: 160, borderRight: "1px solid black" }}
+                    >
+                      {row.name}
+                    </TableCell>
+                    <TableCell
+                      sx={{ width: 160, borderRight: "1px solid black" }}
+                      align="left"
+                    >
+                      {row.company}
+                    </TableCell>
+                    <TableCell
+                      sx={{ width: 160, borderRight: "1px solid black" }}
+                      align="left"
+                    >
+                      {row.email}
+                    </TableCell>
+                    <TableCell sx={{ width: 160 }} align="left">
+                      {row.phone}
+                    </TableCell>
+                  </TableRow>
+                ))}
 
-                    {emptyRows > 0 && (
-                        <TableRow style={{height: 53 * emptyRows}}>
-                            <TableCell colSpan={6}/>
-                        </TableRow>
-                    )}
-                </TableBody>
-                <TableFooter>
-                    <TableRow>
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25, {label: "All", value: -1}]}
-                            colSpan={3}
-                            count={customers.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            SelectProps={{
-                                inputProps: {
-                                    "aria-label": "rows per page",
-                                },
-                                native: true,
-                            }}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                            ActionsComponent={TablePaginationActions}
-                        />
-                    </TableRow>
-                </TableFooter>
-            </Table>
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                  colSpan={3}
+                  count={data?.customers?.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  SelectProps={{
+                    inputProps: {
+                      "aria-label": "rows per page",
+                    },
+                    native: true,
+                  }}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+          <Modals data={customerData} open={isOpen} setIsOpen={setIsOpen} />
         </TableContainer>
-            {isOpen &&  <Modals data={customerData} open={isOpen} setIsOpen={setIsOpen}/>}
-
-        </React.Fragment>
-    );
+      )}
+    </>
+  );
 };
 
 export default ContentTable;
